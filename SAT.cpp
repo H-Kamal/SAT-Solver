@@ -1,5 +1,6 @@
 #include <iostream>
-#include<fstream>
+#include <fstream>
+#include <iomanip>
 #include <string>
 
 using namespace std;
@@ -13,63 +14,133 @@ int main()
 
   //Inputting from a file
   string line;
-  string c = "c";
   string p = "p";
-  string zero = "0";
-  char num;
-  int sizeString;
+  int i = 0;
+  int num =-1;
+  int vars = 5;
+  int clause[vars];
+  int soln[vars] = {1,0,1,-1,0};
+  int arg = 0;
+
+
   ifstream dimacsIn;
   //NOTE THAT THE .txt isnt required.
   dimacsIn.open("SATWebsite");
+
   if(dimacsIn.is_open())
   {
     /* NOTE Dont need this since Im going to check each var against the value
     getline(dimacsIn,line);
     //How to make sure 2 strings are the same
-    if(line.compare(c) == 0)
-    {
-      cout << "The strings are the same";
-    }
-    cout << endl;
-    cout  << line << endl;
-    */
-
-    //NOTE I DONT KNOW HOW IM GOING TO SEARCH FOR A 0 IN A STRING!
-    //Works aslong as p is the first letter
+  */
     do {
       getline(dimacsIn,line);
     } while(line.find_first_of(p));
     cout << line << endl;
 
-    //Only extracts the first number of this string
-    /*
-    string check = "4 5";
-    int lineConverted = stoi(check);
-    cout << "Using stoi, the line is: " << lineConverted << endl;
-    */
-    char clause[6];
-    for(int i=0; i<6; i++)
+    for(i= 0; i < vars;i++)
     {
-      clause[i] = '*';
+      clause[i] = 0;
     }
 
-
-    while(dimacsIn.get(num))
+/*
+    while(!(dimacsIn.eof()))
     {
-      if(isdigit(num)!=0)
+      while(num != 0)
       {
-        //cout << "Its the digit " <<num << endl;
-        clause[num] = 'b';
-        //cout << clause[num];
+        dimacsIn>>num;
+        cout << "Went into seconds while" << endl;
+        if(num>0)
+        {
+          cout << "num >0" << endl;
+          clause[num] = 1;
+        }
+        else if(num<0)
+        {
+          cout << "num < 0" << endl;
+          clause[num] = -1;
+        }
+        cout << num << " ";
       }
-      cout << num << " ";
-    }
+*/
+        //Segmentation fault occurs here
+        /*
+        if(!dimacsIn.eof())
+        {
+          dimacsIn >> num;
+        }
 
-    int j = 0;
-    for(j = 0; j<6;j++)
-    {
-      cout << clause[j] << " ";
-    }
+        //i = i+1;
+      }
+      */
+      //dimacsIn >> num;
+
+      //cout << num << " ";
+
+      /*
+      while(!dimacsIn.eof())
+      {
+        dimacsIn>>num;
+        do
+        {
+          if(num > 0)
+          {
+            clause[num-1] = 1;
+          }
+          else if(num < 0)
+          {
+            num = num*-1;
+            clause[num-1] = -1;
+          }
+        }while(num!=0);
+      }
+      */
+      while(!dimacsIn.eof())
+      {
+        dimacsIn>>num;
+          if(num > 0)
+          {
+            clause[num-1] = 1;
+          }
+          else if(num < 0)
+          {
+            num = num*-1;
+            clause[num-1] = -1;
+          }
+          else if(num ==0)
+          {
+            //Check the array and reset it to 0's.
+            for(i=0;i<vars;i++)
+            {
+              if(clause[i] == soln[i])
+              {
+                cout << "Clause satisfied" << endl;
+                arg = arg+1;
+              }
+
+              if(arg>0)
+              {
+                break;
+              }
+              else if(arg==0)
+              {
+                //None of the ifs went in therefore clause not
+                //satisifed
+                //call function again with new randoms
+              }
+            }
+            //Reseting to 0's for next clause
+            for(i= 0; i < vars;i++)
+            {
+              clause[i] = 0;
+            }
+          }
+      }
+      //Printing
+      for(i= 0; i < vars;i++)
+      {
+        cout << clause[i] << " ";
+      }
 
   }
   else
